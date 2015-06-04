@@ -1,0 +1,106 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/material_design_color_grey_200"
+    android:orientation="vertical"
+    android:layout_margin="8dp">
+
+    <LinearLayout
+        android:id="@+id/searchbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:animateLayoutChanges="true"
+        android:background="@drawable/search_bg"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="4dp">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true">
+
+                <at.markushi.ui.ActionView
+                    android:id="@+id/actionView"
+                    android:layout_width="@dimen/icon_size"
+                    android:layout_height="@dimen/icon_size"
+                    android:layout_centerInParent="true"
+                    android:padding="4dp"
+                    app:av_action="drawer"
+                    app:av_color="@color/material_design_color_grey_500" />
+                <!--
+                                <ImageView
+                                    android:id="@+id/imageView"
+                                    android:padding="4dp" />-->
+
+                <ProgressBar
+                    android:id="@+id/progressbar"
+                    style="@style/ProgressStyle"
+                    android:layout_width="@dimen/icon_size"
+                    android:layout_height="@dimen/icon_size"
+                    android:layout_centerInParent="true"
+                    android:padding="8dp"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:orientation="horizontal">
+                <!--
+
+                                <TextView
+                                     android:layout_width="fill_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center_vertical"
+                                    android:paddingLeft="8dp"
+                                    android:textAppearance="?android:attr/textAppearanceMedium"
+                                    android:textColor="@color/material_design_color_grey_700" />
+                -->
+
+                <EditText
+                    android:id="@+id/searchText"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:hint="搜索"
+                    android:imeOptions="actionSearch"
+                    android:singleLine="true"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColorHint="@color/material_design_color_grey_700" />
+
+                <at.markushi.ui.ActionView
+                    android:id="@+id/search_close"
+                    android:layout_width="@dimen/icon_size"
+                    android:layout_height="@dimen/icon_size"
+                    android:layout_centerInParent="true"
+                    android:padding="4dp"
+                    android:visibility="gone"
+                    app:av_action="close"
+                    app:av_color="@color/material_design_color_grey_500" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/searchResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+</LinearLayout>
