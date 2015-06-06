@@ -32,15 +32,15 @@ import at.markushi.ui.action.Action;
 import at.markushi.ui.action.BackAction;
 import at.markushi.ui.action.DrawerAction;
 
-/**
- *
- */
-public class MainActivity extends AppCompatActivity implements OnSearchListener {
+public class MainActivity extends AppCompatActivity implements SearchListener {
 
 
     private Action backAction;
     private Action drawerAction;
 
+    /**
+     * @By User
+     */
     public static class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchHolder> {
         List<String> strings;
 
@@ -81,6 +81,9 @@ public class MainActivity extends AppCompatActivity implements OnSearchListener 
 
     private SearchAdapter adapter;
 
+    /**
+     * @By User
+     */
     @Override
     public boolean onSearch(String search) {
         new AsyncTask<String, Void, List<String>>() {
@@ -129,7 +132,13 @@ public class MainActivity extends AppCompatActivity implements OnSearchListener 
         recyclerView = (RecyclerView) findViewById(R.id.searchResult);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         adapter = new SearchAdapter();
+        /**
+         * @By User
+         */
         recyclerView.setAdapter(adapter);
+        /**
+         * @By User
+         */
         recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {

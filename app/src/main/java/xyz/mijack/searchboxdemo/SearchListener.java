@@ -3,7 +3,7 @@ package xyz.mijack.searchboxdemo;
 /**
  * Created by MiJack on 2015/6/3.
  */
-public interface OnSearchListener {
+public interface SearchListener {
 
     /**
      * @param search
