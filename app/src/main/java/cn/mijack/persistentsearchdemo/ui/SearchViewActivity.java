@@ -1,4 +1,4 @@
-package cn.mijack.persistentsearchdemo;
+package cn.mijack.persistentsearchdemo.ui;
 
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +7,8 @@ import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.PointerIcon;
+
+import cn.mijack.persistentsearchdemo.R;
 
 public class SearchViewActivity extends AppCompatActivity {
 

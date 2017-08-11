@@ -1,4 +1,4 @@
-package cn.mijack.persistentsearchdemo;
+package cn.mijack.persistentsearchdemo.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -25,6 +25,10 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.mijack.persistentsearchdemo.ItemDivider;
+import cn.mijack.persistentsearchdemo.ItemClickSupport;
+import cn.mijack.persistentsearchdemo.R;
 
 public class PersistentSearchActivity extends AppCompatActivity {
     public static final int STATE_INIT = 0;
@@ -64,7 +68,7 @@ public class PersistentSearchActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         arrayAdapter = new ArrayAdapter();
         recyclerView.setAdapter(arrayAdapter);
-        recyclerView.addItemDecoration(new Divider());
+        recyclerView.addItemDecoration(new ItemDivider());
         closeView.setOnClickListener(v -> closeSearchView());
         ItemClickSupport.addTo(recyclerView)
                 .setOnItemClickListener((recyclerView, position, v) -> {

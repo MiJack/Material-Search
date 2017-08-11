@@ -4,7 +4,7 @@
     android:id="@+id/activity_search_view_check"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ExpandableSearchActivity">
+    tools:context=".ui.ExpandableSearchActivity">
 
     <include layout="@layout/toolbar"/>
     <include layout="@layout/search_toolbar"

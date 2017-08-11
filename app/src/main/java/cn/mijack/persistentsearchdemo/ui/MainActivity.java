@@ -1,10 +1,12 @@
-package cn.mijack.persistentsearchdemo;
+package cn.mijack.persistentsearchdemo.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+
+import cn.mijack.persistentsearchdemo.R;
 
 /**
  * Created by Mr.Yuan on 2017/8/10.

@@ -1,4 +1,4 @@
-package cn.mijack.persistentsearchdemo;
+package cn.mijack.persistentsearchdemo.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -22,6 +22,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.reflect.Field;
+
+import cn.mijack.persistentsearchdemo.R;
 
 public class ExpandableSearchActivity extends AppCompatActivity {
 
