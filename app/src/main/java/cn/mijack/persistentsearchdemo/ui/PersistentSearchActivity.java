@@ -131,7 +131,7 @@ public class PersistentSearchActivity extends AppCompatActivity {
 
     private void doDisplay(String data) {
         state = STATE_DISPLAY;
-        Toast.makeText(this, "doDisplay", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "query", Toast.LENGTH_SHORT).show();
         voiceView.setVisibility(View.GONE);
         closeView.setVisibility(View.VISIBLE);
         clearFocus();

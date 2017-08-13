@@ -12,22 +12,21 @@ import android.view.View;
  */
 public class ItemDivider extends RecyclerView.ItemDecoration {
     @Override
-    public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
+    public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
         RecyclerView.LayoutManager layoutManager = parent.getLayoutManager();
         int childCount = layoutManager.getChildCount();
         int left = 0;
         int right = parent.getWidth();
-        int top = 0;
+        int top ;
         int height = 1;
         Paint paint = new Paint();
         paint.setColor(Color.parseColor("#FF737373"));
         for (int i = 0; i < childCount; i++) {
             View child = layoutManager.getChildAt(i);
             if (i != 0) {
-                top += height;
+                top = child.getTop()-height;
                 c.drawRect(left, top, right, top + height, paint);
             }
-            top += child.getHeight();
         }
     }
 

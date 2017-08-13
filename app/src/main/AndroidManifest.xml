@@ -26,7 +26,7 @@
         <activity
             android:name=".ui.SearchViewActivity"
             android:exported="true" />
-        <activity android:name=".ui.SearchBoxActivity"></activity>
+        <activity android:name=".ui.SearchBoxActivity" android:exported="true"></activity>
     </application>
 
 </manifest>

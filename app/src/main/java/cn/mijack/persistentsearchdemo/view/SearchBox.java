@@ -21,22 +21,17 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import cn.mijack.persistentsearchdemo.ItemClickSupport;
-import cn.mijack.persistentsearchdemo.ItemDivider;
 import cn.mijack.persistentsearchdemo.R;
-import cn.mijack.persistentsearchdemo.ui.SearchBoxActivity;
 
 /**
- * Created by Mr.Yuan on 2017/8/11.
+ * @author Yuan Yujie
+ * @since 2017/8/11.
  */
-
 public class SearchBox extends CardView {
 
     public static final int STATE_INIT = 0;
     public static final int STATE_FOCUS = 1;
-    public static final int STATE_SHOW_HISTORY = 2;
-    public static final int STATE_SHOW_SUGGUEST = 3;
-    public static final int STATE_DISPLAY = 4;
+    public static final int STATE_DISPLAY = 2;
     private int state = STATE_INIT;
     private ImageView imageView;
     private DrawerArrowDrawable drawable;
@@ -46,8 +41,11 @@ public class SearchBox extends CardView {
     private ImageView closeView;
     private ProgressBar progressBar;
     private View layout;
-    private boolean closed = true;
-    private RecyclerView.Adapter suggestionAdapter;
+    private boolean isSearchBoxOpen = false;
+    private RecyclerView.Adapter recyclerViewAdapter;
+    private OnSearchBoxStateChangeListener onSearchBoxListener;
+    private OnQueryTextListener onQueryTextListener;
+    private OnVoiceActiveListener onVoiceActiveListener;
 
     public SearchBox(Context context) {
         this(context, null);
@@ -64,6 +62,11 @@ public class SearchBox extends CardView {
         drawable = new DrawerArrowDrawable(context);
         imageView = v.findViewById(R.id.imageView);
         voiceView = v.findViewById(R.id.ic_voice);
+        voiceView.setOnClickListener(voiceView -> {
+            if (onVoiceActiveListener != null) {
+                onVoiceActiveListener.onVoiceActive(this);
+            }
+        });
         progressBar = v.findViewById(R.id.progressBar);
         closeView = v.findViewById(R.id.ic_close);
         layout = v.findViewById(R.id.layout);
@@ -75,70 +78,81 @@ public class SearchBox extends CardView {
         editText = findViewById(R.id.editText);
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-//        recyclerView.setAdapter(arrayAdapter);
-        recyclerView.addItemDecoration(new ItemDivider());
-        closeView.setOnClickListener(view -> closeSearchView());
-//        ItemClickSupport.addTo(recyclerView)
-//                .setOnItemClickListener((recyclerView, position, view) -> {
-//                });
-//        editText.setOnFocusChangeListener((view, b) -> {
-//            if (state == STATE_SHOW_SUGGUEST) {
-//                showSuggest();
-//                return;
-//            }
-//            if (state == STATE_DISPLAY) {
-//                return;
-//            }
-//            if (b) {
-//                openSearchView();
-//            } else {
-//                closeSearchView();
-//            }
-//        });
-//        editText.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//                System.out.println("onTextChanged:" + charSequence);
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//
-//            }
-//        });
-//        editText.setOnEditorActionListener((textView, i, keyEvent) -> {
-//            doSearch(textView.getText().toString());
-//            return true;
-//        });
-//        imageView.setOnClickListener(view -> {
-//            if (drawable.getProgress() != 0 && drawable.getProgress() != 1) {
-//                return;
-//            }
-//            if (closed) {
-//                openSearchView();
-//            } else {
-//                closeSearchView();
-//            }
-//        });
+        closeView.setOnClickListener(view -> {
+            if (state == STATE_DISPLAY) {
+                openSearchView();
+            } else {
+                closeSearchView();
+            }
+        });
+        editText.setOnFocusChangeListener((view, b) -> {
+            if (b) {
+                openSearchView();
+            } else if (state != STATE_DISPLAY) {
+                closeSearchView();
+            }
+        });
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                showRecyclerView();
+                if (onQueryTextListener != null) {
+                    onQueryTextListener.onQueryTextChange(charSequence);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        editText.setOnEditorActionListener((textView, i, keyEvent) -> {
+            if (onQueryTextListener != null) {
+                onQueryTextListener.onQueryTextSubmit(textView.getText());
+            }
+            return true;
+        });
+        imageView.setOnClickListener(view -> {
+            if (drawable.getProgress() != 0 && drawable.getProgress() != 1) {
+                return;
+            }
+            if (state == STATE_DISPLAY || !isSearchBoxOpen()) {
+                openSearchView();
+            } else {
+                closeSearchView();
+            }
+        });
     }
 
-    private void doSearch(String search) {
-        Toast.makeText(getContext(), "search:" + search, Toast.LENGTH_SHORT).show();
+    private void showRecyclerView() {
+        if (recyclerView.getVisibility() != VISIBLE) {
+            ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
+            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) recyclerView.getLayoutParams();
+            lp.topMargin = layout.getHeight();
+            valueAnimator.addUpdateListener(animator -> {
+                Float animatedValue = (Float) animator.getAnimatedValue();
+                int recyclerViewHeight = recyclerView.getHeight();
+                FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) recyclerView.getLayoutParams();
+                layoutParams.topMargin = layout.getHeight() + (int) (recyclerViewHeight * (animatedValue - 1));
+                recyclerView.setLayoutParams(layoutParams);
+            });
+            valueAnimator.start();
+        }
+        recyclerView.setVisibility(View.VISIBLE);
     }
 
-    private void showSuggest() {
-
+    private void hideRecyclerView() {
+        recyclerView.setVisibility(View.INVISIBLE);
     }
 
-    private void doDisplay(String data) {
+    public void query(CharSequence data) {
         state = STATE_DISPLAY;
-        Toast.makeText(getContext(), "doDisplay", Toast.LENGTH_SHORT).show();
-        voiceView.setVisibility(View.GONE);
+        Toast.makeText(getContext(), "query", Toast.LENGTH_SHORT).show();
+        hideVoiceIcon();
         closeView.setVisibility(View.VISIBLE);
         clearFocus();
         editText.setText(data);
@@ -162,38 +176,40 @@ public class SearchBox extends CardView {
         });
     }
 
-    private void openSearchView() {
+    public void openSearchView() {
+        isSearchBoxOpen = true;
         state = STATE_FOCUS;
         editText.requestFocus();
-        voiceView.setVisibility(View.GONE);
+        hideVoiceIcon();
         closeView.setVisibility(View.VISIBLE);
-        recyclerView.setVisibility(View.INVISIBLE);
+        hideRecyclerView();
         ValueAnimator progressAnimator = ValueAnimator.ofFloat(drawable.getProgress(), 1);
         progressAnimator.addUpdateListener(animator -> {
             Float animatedValue = (Float) animator.getAnimatedValue();
             drawable.setProgress(animatedValue);
             FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) recyclerView.getLayoutParams();
-            recyclerView.setVisibility(View.VISIBLE);
+            showRecyclerView();
             lp.topMargin = (int) (layout.getHeight() + (animatedValue - 1) * recyclerView.getHeight());
-            System.out.println("top:" + lp.topMargin);
             recyclerView.setLayoutParams(lp);
         });
         progressAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 drawable.setVerticalMirror(drawable.getProgress() == 1);
-//                PersistentSearchActivity.this.closed = false;
             }
         });
         progressAnimator.start();
+        if (onSearchBoxListener != null) {
+            onSearchBoxListener.onSearchStateChange(this);
+        }
     }
 
-    private void closeSearchView() {
+    public void closeSearchView() {
+        isSearchBoxOpen = false;
         state = STATE_INIT;
-        voiceView.setVisibility(View.VISIBLE);
+        showVoiceIcon();
         closeView.setVisibility(View.GONE);
         clearFocus();
-        editText.setText(null);
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) recyclerView.getLayoutParams();
         drawable.setVerticalMirror(drawable.getProgress() == 1f);
         ValueAnimator progressAnimator = ValueAnimator.ofFloat(drawable.getProgress(), 0);
@@ -207,7 +223,7 @@ public class SearchBox extends CardView {
                             Float animatedValue = (Float) animator.getAnimatedValue();
                             drawable.setProgress(animatedValue);
                             FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) recyclerView.getLayoutParams();
-                            recyclerView.setVisibility(View.VISIBLE);
+                            showRecyclerView();
                             lp.topMargin = (int) (layout.getHeight() + (animatedValue - 1) * recyclerView.getHeight());
                             System.out.println("top:" + lp.topMargin);
                             recyclerView.setLayoutParams(lp);
@@ -216,10 +232,19 @@ public class SearchBox extends CardView {
             @Override
             public void onAnimationEnd(Animator animation) {
                 drawable.setVerticalMirror(false);
-//                PersistentSearchActivity.this.closed = true;
+                editText.setText(null);
             }
         });
         progressAnimator.start();
+        if (onSearchBoxListener != null) {
+            onSearchBoxListener.onSearchStateChange(this);
+        }
+    }
+
+    public void requestEditTextFocus() {
+        requestFocus();
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(editText, 0);
     }
 
     public void clearFocus() {
@@ -228,5 +253,73 @@ public class SearchBox extends CardView {
         if (imm.isActive(editText)) {
             imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
         }
+    }
+
+    public void setRecyclerViewAdapter(RecyclerView.Adapter recyclerViewAdapter) {
+        this.recyclerViewAdapter = recyclerViewAdapter;
+        recyclerView.setAdapter(recyclerViewAdapter);
+    }
+
+    public RecyclerView.Adapter getRecyclerViewAdapter() {
+        return recyclerViewAdapter;
+    }
+
+    public RecyclerView getRecyclerView() {
+        return recyclerView;
+    }
+
+    public boolean isSearchBoxOpen() {
+        return isSearchBoxOpen;
+    }
+
+    public void setSearchBoxOpen(boolean toOpen) {
+        if (toOpen) {
+            openSearchView();
+        } else {
+            closeSearchView();
+        }
+    }
+
+    public void toggleSearchBox() {
+        if (isSearchBoxOpen()) {
+            closeSearchView();
+        } else {
+            openSearchView();
+        }
+    }
+
+    public void hideVoiceIcon() {
+        voiceView.setVisibility(GONE);
+    }
+
+    public void showVoiceIcon() {
+        voiceView.setVisibility(VISIBLE);
+    }
+
+    public void setOnQueryTextListener(OnQueryTextListener onQueryTextListener) {
+        this.onQueryTextListener = onQueryTextListener;
+    }
+
+    public void setOnSearchBoxListener(OnSearchBoxStateChangeListener onSearchBoxListener) {
+        this.onSearchBoxListener = onSearchBoxListener;
+    }
+
+    public CharSequence getQueryText() {
+        return editText.getText();
+    }
+
+    public interface OnSearchBoxStateChangeListener {
+        void onSearchStateChange(SearchBox searchBox);
+    }
+
+    public interface OnQueryTextListener {
+
+        void onQueryTextSubmit(CharSequence query);
+
+        void onQueryTextChange(CharSequence newText);
+    }
+
+    public interface OnVoiceActiveListener {
+        void onVoiceActive(SearchBox searchBox);
     }
 }
