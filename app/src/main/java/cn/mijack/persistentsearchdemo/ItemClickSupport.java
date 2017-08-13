@@ -17,7 +17,7 @@ public class ItemClickSupport {
                 // ask the RecyclerView for the viewHolder of this view.
                 // then use it to get the position for the adapter
                 RecyclerView.ViewHolder holder = mRecyclerView.getChildViewHolder(v);
-                mOnItemClickListener.onItemClicked(mRecyclerView, holder.getAdapterPosition(), v);
+                mOnItemClickListener.onItemClicked(mRecyclerView, holder.getLayoutPosition(), v);
             }
         }
     };
@@ -26,7 +26,7 @@ public class ItemClickSupport {
         public boolean onLongClick(View v) {
             if (mOnItemLongClickListener != null) {
                 RecyclerView.ViewHolder holder = mRecyclerView.getChildViewHolder(v);
-                return mOnItemLongClickListener.onItemLongClicked(mRecyclerView, holder.getAdapterPosition(), v);
+                return mOnItemLongClickListener.onItemLongClicked(mRecyclerView, holder.getLayoutPosition(), v);
             }
             return false;
         }

@@ -17,10 +17,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.PersistentSearchActivity" android:exported="true"
+            android:name=".ui.PersistentSearchActivity"
+            android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".ui.ExpandableSearchActivity" android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ui.SearchViewActivity" android:exported="true"></activity>
+        <activity
+            android:name=".ui.ExpandableSearchActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.SearchViewActivity"
+            android:exported="true" />
+        <activity android:name=".ui.SearchBoxActivity"></activity>
     </application>
 
 </manifest>
