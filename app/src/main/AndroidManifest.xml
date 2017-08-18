@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cn.mijack.persistentsearchdemo">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -26,7 +28,9 @@
         <activity
             android:name=".ui.SearchViewActivity"
             android:exported="true" />
-        <activity android:name=".ui.SearchBoxActivity" android:exported="true"></activity>
+        <activity
+            android:name=".ui.SearchBoxActivity"
+            android:exported="true"></activity>
     </application>
 
 </manifest>
